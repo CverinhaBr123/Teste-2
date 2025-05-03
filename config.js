@@ -7,10 +7,10 @@ window.SITE_CONFIG = {
   // Caminhos das páginas do sistema (sem barra no início)
   paths: {
     home: "https://cverinhabr123.github.io/Teste-2/app.html", // Página inicial
-    upload: "upload.html", // Página de upload
-    login: "login.html", // Página de login
-    admin: "admin.html", // Área do administrador
-    files: "files.html", // Página de arquivos
+    upload: "https://cverinhabr123.github.io/Teste-2/app.html", // Página de upload
+    login: "https://cverinhabr123.github.io/Teste-2/app.html", // Página de login
+    admin: "https://cverinhabr123.github.io/Teste-2/app.html", // Área do administrador
+    files: "https://cverinhabr123.github.io/Teste-2/app.html", // Página de arquivos
   },
 
   // Configurações de armazenamento
