@@ -2,15 +2,15 @@
 window.SITE_CONFIG = {
   // URL base do seu site (com barra no final)
   // Para GitHub Pages com repositório personalizado
-  baseUrl: "https://cverinhabr123.github.io/Teste-2/app.html", // Caminho base para o repositório "Teste-2"
+  baseUrl: "baseUrl", // Caminho base para o repositório "Teste-2"
 
   // Caminhos das páginas do sistema (sem barra no início)
   paths: {
-    home: "https://cverinhabr123.github.io/Teste-2/app.html", // Página inicial
-    upload: "https://cverinhabr123.github.io/Teste-2/app.html", // Página de upload
-    login: "https://cverinhabr123.github.io/Teste-2/app.html", // Página de login
-    admin: "https://cverinhabr123.github.io/Teste-2/app.html", // Área do administrador
-    files: "https://cverinhabr123.github.io/Teste-2/app.html", // Página de arquivos
+    home: "home", // Página inicial
+    upload: "upload", // Página de upload
+    login: "login", // Página de login
+    admin: "admin", // Área do administrador
+    files: "files", // Página de arquivos
   },
 
   // Configurações de armazenamento
