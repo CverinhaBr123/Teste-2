@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Administrador - Sistema de Gestão de Técnicos e Materiais</title>
+    <link rel="icon" href="../../favicon.ico" />
+    <!-- Importar o arquivo de configuração global -->
+    <script src="../../config.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 0.875rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .back-icon {
+            margin-right: 0.25rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-name {
+            color: white;
+            font-size: 0.875rem;
+        }
+        
+        .logout-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .logout-icon {
+            margin-right: 0.25rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background-color: #f9fafb;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .card-title {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #111827;
+        }
+        
+        .card-description {
+            margin: 0.5rem 0 0;
+            color: #6b7280;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card-footer {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .badge-outline {
+            background-color: transparent;
+            border: 1px solid;
+        }
+        
+        .badge-new {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+        
+        .badge-viewed {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+        
+        .badge-resolved {
+            background-color: #d1fae5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1rem;
+        }
+        
+        @media (min-width: 640px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        
+        .file-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .file-card.new {
+            border: 2px solid #ef4444;
+        }
+        
+        .file-image {
+            position: relative;
+            height: 12rem;
+            background-color: #f3f4f6;
+            cursor: pointer;
+        }
+        
+        .file-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .file-image-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .file-image:hover .file-image-overlay {
+            opacity: 1;
+        }
+        
+        .file-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #ef4444;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .file-content {
+            padding: 1rem;
+        }
+        
+        .file-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-title {
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .file-date {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .file-category {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background-color: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-description {
+            font-size: 0.875rem;
+            color: #4b5563;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .file-footer {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .file-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background-color: white;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .file-button:hover {
+            background-color: #f9fafb;
+        }
+        
+        .file-button-icon {
+            margin-right: 0.25rem;
+        }
+        
+        .file-button-delete {
+            color: #ef4444;
+            background-color: transparent;
+            border: none;
+        }
+        
+        .file-button-delete:hover {
+            background-color: #fee2e2;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            color: #6b7280;
+        }
+        
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 1rem;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s linear 0.2s, opacity 0.2s;
+        }
+        
+        .modal.open {
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0s;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            max-width: 48rem;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .modal-title {
+            font-weight: 500;
+            color: #111827;
+        }
+        
+        .modal-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .modal-close {
+            background-color: transparent;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-body {
+            position: relative;
+            height: 60vh;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .modal-footer {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .modal-description {
+            margin-bottom: 1rem;
+        }
+        
+        .modal-description-title {
+            font-weight: 500;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+        
+        .modal-description-text {
+            font-size: 0.875rem;
+            color: #4b5563;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .button-outline {
+            background-color: white;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+        }
+        
+        .button-outline:hover {
+            background-color: #eff6ff;
+        }
+        
+        .button-icon {
+            margin-right: 0.25rem;
+        }
+        
+        .auth-check {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .auth-check-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #2563eb;
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Verificação de autenticação -->
+    <div class="auth-check" id="authCheck">
+        <div class="auth-check-spinner"></div>
+        <p>Verificando autenticação...</p>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <a href="../../" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" class="back-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Voltar para a página inicial
+            </a>
+            
+            <div class="user-info">
+                <span class="user-name" id="userName">Olá, Admin</span>
+                <button class="logout-button" id="logoutButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="logout-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Sair
+                </button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <div class="flex-between">
+                    <div>
+                        <h2 class="card-title">Área do Administrador</h2>
+                        <p class="card-description">Gerencie as fotos de erros enviadas pelos técnicos</p>
+                    </div>
+                    <div class="badges">
+                        <span class="badge badge-outline badge-new" id="newCount">0 Novos</span>
+                        <span class="badge badge-outline badge-viewed" id="viewedCount">0 Vistos</span>
+                        <span class="badge badge-outline badge-resolved" id="resolvedCount">0 Resolvidos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-content">
+                <div class="tabs">
+                    <div class="tab active" data-tab="all">Todos</div>
+                    <div class="tab" data-tab="new">Novos</div>
+                    <div class="tab" data-tab="viewed">Vistos</div>
+                    <div class="tab" data-tab="resolved">Resolvidos</div>
+                </div>
+                
+                <div class="tab-content active" data-tab-content="all">
+                    <div class="grid" id="allFiles"></div>
+                    <div class="empty-state" id="allEmpty">Nenhum arquivo encontrado</div>
+                </div>
+                
+                <div class="tab-content" data-tab-content="new">
+                    <div class="grid" id="newFiles"></div>
+                    <div class="empty-state" id="newEmpty">Nenhum arquivo novo encontrado</div>
+                </div>
+                
+                <div class="tab-content" data-tab-content="viewed">
+                    <div class="grid" id="viewedFiles"></div>
+                    <div class="empty-state" id="viewedEmpty">Nenhum arquivo visto encontrado</div>
+                </div>
+                
+                <div class="tab-content" data-tab-content="resolved">
+                    <div class="grid" id="resolvedFiles"></div>
+                    <div class="empty-state" id="resolvedEmpty">Nenhum arquivo resolvido encontrado</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de visualização de arquivo -->
+    <div class="modal" id="fileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title" id="modalFileName">Nome do arquivo</h3>
+                    <p class="modal-subtitle" id="modalFileInfo">Enviado por Técnico em 01/01/2023</p>
+                </div>
+                <button class="modal-close" id="modalClose">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="#" alt="Visualização ampliada" class="modal-image" id="modalImage">
+            </div>
+            <div class="modal-footer">
+                <div class="modal-description">
+                    <h4 class="modal-description-title">Descrição do Problema</h4>
+                    <p class="modal-description-text" id="modalDescription">Descrição do problema</p>
+                </div>
+                <div class="modal-actions">
+                    <div class="modal-badges">
+                        <span class="badge badge-outline" id="modalCategory">Categoria</span>
+                        <span class="badge badge-outline" id="modalStatus">Status</span>
+                    </div>
+                    <div class="modal-buttons">
+                        <a href="#" class="button button-outline" id="modalDownload" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="button-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Baixar
+                        </a>
+                        <button class="button" id="modalClose2">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            const authCheck = document.getElementById('authCheck');
+            const userName = document.getElementById('userName');
+            const logoutButton = document.getElementById('logoutButton');
+            
+            // Verificar se o usuário está autenticado
+            function checkAuth() {
+                try {
+                    const userJson = localStorage.getItem('user');
+                    if (!userJson) {
+                        // Usuário não autenticado, redirecionar para a página de login
+                        const baseUrl = window.SITE_CONFIG ? window.SITE_CONFIG.baseUrl : '../../';
+                        window.location.href = baseUrl + 'app/login/';
+                        return false;
+                    }
+                    
+                    const user = JSON.parse(userJson);
+                    userName.textContent = `Olá, ${user.username}`;
+                    return true;
+                } catch (error) {
+                    console.error('Erro ao verificar autenticação:', error);
+                    return false;
+                }
+            }
+            
+            // Verificar autenticação ao carregar a página
+            setTimeout(function() {
+                const isAuthenticated = checkAuth();
+                if (isAuthenticated) {
+                    authCheck.style.display = 'none';
+                    loadFiles();
+                }
+            }, 1000);
+            
+            // Logout
+            logoutButton.addEventListener('click', function() {
+                localStorage.removeItem('user');
+                const baseUrl = window.SITE_CONFIG ? window.SITE_CONFIG.baseUrl : '../../';
+                window.location.href = baseUrl + 'app/login/';
+            });
+            
+            // Tabs
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Remover classe active de todas as tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Adicionar classe active na tab clicada
+                    this.classList.add('active');
+                    
+                    // Esconder todos os conteúdos
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Mostrar o conteúdo correspondente
+                    document.querySelector(`[data-tab-content="${tabName}"]`).classList.add('active');
+                });
+            });
+            
+            // Modal
+            const fileModal = document.getElementById('fileModal');
+            const modalClose = document.getElementById('modalClose');
+            const modalClose2 = document.getElementById('modalClose2');
+            const modalFileName = document.getElementById('modalFileName');
+            const modalFileInfo = document.getElementById('modalFileInfo');
+            const modalImage = document.getElementById('modalImage');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalStatus = document.getElementById('modalStatus');
+            const modalDownload = document.getElementById('modalDownload');
+            
+            // Fechar modal
+            modalClose.addEventListener('click', function() {
+                fileModal.classList.remove('open');
+            });
+            
+            modalClose2.addEventListener('click', function() {
+                fileModal.classList.remove('open');
+            });
+            
+            // Fechar modal ao clicar fora
+            fileModal.addEventListener('click', function(e) {
+                if (e.target === fileModal) {
+                    fileModal.classList.remove('open');
+                }
+            });
+            
+            // Carregar arquivos
+            function loadFiles() {
+                const storagePrefix = window.SITE_CONFIG && window.SITE_CONFIG.storage ? window.SITE_CONFIG.storage.prefix : 'rlc_almox_';
+                const storageKey = `${storagePrefix}shared_files`;
+                
+                let files = [];
+                try {
+                    const filesJson = localStorage.getItem(storageKey);
+                    if (filesJson) {
+                        files = JSON.parse(filesJson);
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar arquivos:', error);
+                }
+                
+                // Contar arquivos por status
+                const newFiles = files.filter(file => file.status === 'novo');
+                const viewedFiles = files.filter(file => file.status === 'visto');
+                const resolvedFiles = files.filter(file => file.status === 'resolvido');
+                
+                // Atualizar contadores
+                document.getElementById('newCount').textContent = `${newFiles.length} Novos`;
+                document.getElementById('viewedCount').textContent = `${viewedFiles.length} Vistos`;
+                document.getElementById('resolvedCount').textContent = `${resolvedFiles.length} Resolvidos`;
+                
+                // Renderizar arquivos
+                renderFiles('allFiles', 'allEmpty', files);
+                renderFiles('newFiles', 'newEmpty', newFiles);
+                renderFiles('viewedFiles', 'viewedEmpty', viewedFiles);
+                renderFiles('resolvedFiles', 'resolvedEmpty', resolvedFiles);
+            }
+            
+            // Renderizar arquivos
+            function renderFiles(containerId, emptyId, files) {
+                const container = document.getElementById(containerId);
+                const emptyState = document.getElementById(emptyId);
+                
+                // Limpar container
+                container.innerHTML = '';
+                
+                if (files.length === 0) {
+                    container.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    return;
+                }
+                
+                container.style.display = 'grid';
+                emptyState.style.display = 'none';
+                
+                // Renderizar cada arquivo
+                files.forEach(file => {
+                    const fileCard = document.createElement('div');
+                    fileCard.className = `file-card ${file.status === 'novo' ? 'new' : ''}`;
+                    
+                    const statusLabel = file.status === 'novo' ? 'Novo' : file.status === 'visto' ? 'Visto' : 'Resolvido';
+                    const statusClass = file.status === 'novo' ? 'badge-new' : file.status === 'visto' ? 'badge-viewed' : 'badge-resolved';
+                    
+                    fileCard.innerHTML = `
+                        <div class="file-image" data-id="${file.id}">
+                            <img src="${file.url}" alt="Erro reportado por ${file.tecnico}">
+                            <div class="file-image-overlay">
+                                <button class="button">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                    Visualizar
+                                </button>
+                            </div>
+                            ${file.status === 'novo' ? '<div class="file-badge">Novo</div>' : ''}
+                        </div>
+                        <div class="file-content">
+                            <div class="file-header">
+                                <div>
+                                    <div class="file-title">${file.tecnico}</div>
+                                    <div class="file-date">${file.data}</div>
+                                </div>
+                                <span class="badge badge-outline ${statusClass}">${statusLabel}</span>
+                            </div>
+                            <div class="file-category">${file.categoria}</div>
+                            <div class="file-description">${file.descricao}</div>
+                        </div>
+                        <div class="file-footer">
+                            <button class="file-button" data-action="download" data-id="${file.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="file-button-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Baixar
+                            </button>
+                            ${file.status === 'novo' ? `
+                                <button class="file-button" data-action="mark-viewed" data-id="${file.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="file-button-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Marcar como visto
+                                </button>
+                            ` : ''}
+                            ${file.status === 'visto' ? `
+                                <button class="file-button" data-action="mark-resolved" data-id="${file.id}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="file-button-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                    Marcar como resolvido
+                                </button>
+                            ` : ''}
+                            <button class="file-button file-button-delete" data-action="delete" data-id="${file.id}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+                    
+                    container.appendChild(fileCard);
+                });
+                
+                // Adicionar eventos
+                addFileEvents();
+            }
+            
+            // Adicionar eventos aos arquivos
+            function addFileEvents() {
+                // Evento de visualização
+                document.querySelectorAll('.file-image').forEach(element => {
+                    element.addEventListener('click', function() {
+                        const fileId = this.getAttribute('data-id');
+                        openFileModal(fileId);
+                    });
+                });
+                
+                // Eventos de ações
+                document.querySelectorAll('[data-action]').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const action = this.getAttribute('data-action');
+                        const fileId = this.getAttribute('data-id');
+                        
+                        switch (action) {
+                            case 'download':
+                                downloadFile(fileId);
+                                break;
+                            case 'mark-viewed':
+                                markFileAsViewed(fileId);
+                                break;
+                            case 'mark-resolved':
+                                markFileAsResolved(fileId);
+                                break;
+                            case 'delete':
+                                deleteFile(fileId);
+                                break;
+                        }
+                    });
+                });
+            }
+            
+            // Abrir modal de arquivo
+            function openFileModal(fileId) {
+                const file = getFileById(fileId);
+                if (!file) return;
+                
+                modalFileName.textContent = file.name;
+                modalFileInfo.textContent = `Enviado por ${file.tecnico} em ${file.data}`;
+                modalImage.src = file.url;
+                modalDescription.textContent = file.descricao;
+                modalCategory.textContent = file.categoria;
+                
+                const statusLabel = file.status === 'novo' ? 'Novo' : file.status === 'visto' ? 'Visto' : 'Resolvido';
+                const statusClass = file.status === 'novo' ? 'badge-new' : file.status === 'visto' ? 'badge-viewed' : 'badge-resolved';
+                
+                modalStatus.textContent = statusLabel;
+                modalStatus.className = `badge badge-outline ${statusClass}`;
+                
+                modalDownload.href = file.url;
+                
+                fileModal.classList.add('open');
+            }
+            
+            // Obter arquivo por ID
+            function getFileById(fileId) {
+                const storagePrefix = window.SITE_CONFIG && window.SITE_CONFIG.storage ? window.SITE_CONFIG.storage.prefix : 'rlc_almox_';
+                const storageKey = `${storagePrefix}shared_files`;
+                
+                try {
+                    const filesJson = localStorage.getItem(storageKey);
+                    if (!filesJson) return null;
+                    
+                    const files = JSON.parse(filesJson);
+                    return files.find(file => file.id === fileId);
+                } catch (error) {
+                    console.error('Erro ao obter arquivo:', error);
+                    return null;
+                }
+            }
+            
+            // Download de arquivo
+            function downloadFile(fileId) {
+                const file = getFileById(fileId);
+                if (!file) return;
+                
+                // Abrir URL em nova aba
+                window.open(file.url, '_blank');
+            }
+            
+            // Marcar arquivo como visto
+            function markFileAsViewed(fileId) {
+                updateFileStatus(fileId, 'visto');
+            }
+            
+            // Marcar arquivo como resolvido
+            function markFileAsResolved(fileId) {
+                updateFileStatus(fileId, 'resolvido');
+            }
+            
+            // Atualizar status do arquivo
+            function updateFileStatus(fileId, status) {
+                const storagePrefix = window.SITE_CONFIG && window.SITE_CONFIG.storage ? window.SITE_CONFIG.storage.prefix : 'rlc_almox_';
+                const storageKey = `${storagePrefix}shared_files`;
+                
+                try {
+                    const filesJson = localStorage.getItem(storageKey);
+                    if (!filesJson) return;
+                    
+                    const files = JSON.parse(filesJson);
+                    const fileIndex = files.findIndex(file => file.id === fileId);
+                    
+                    if (fileIndex === -1) return;
+                    
+                    files[fileIndex].status = status;
+                    localStorage.setItem(storageKey, JSON.stringify(files));
+                    
+                    // Recarregar arquivos
+                    loadFiles();
+                } catch (error) {
+                    console.error('Erro ao atualizar status do arquivo:', error);
+                }
+            }
+            
+            // Excluir arquivo
+            function deleteFile(fileId) {
+                if (!confirm('Tem certeza que deseja excluir este arquivo?')) return;
+                
+                const storagePrefix = window.SITE_CONFIG && window.SITE_CONFIG.storage ? window.SITE_CONFIG.storage.prefix : 'rlc_almox_';
+                const storageKey = `${storagePrefix}shared_files`;
+                
+                try {
+                    const filesJson = localStorage.getItem(storageKey);
+                    if (!filesJson) return;
+                    
+                    const files = JSON.parse(filesJson);
+                    const updatedFiles = files.filter(file => file.id !== fileId);
+                    
+                    localStorage.setItem(storageKey, JSON.stringify(updatedFiles));
+                    
+                    // Recarregar arquivos
+                    loadFiles();
+                } catch (error) {
+                    console.error('Erro ao excluir arquivo:', error);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -63,15 +63,15 @@
             // Obter a URL base para o link da página inicial
             const baseUrl = window.SITE_CONFIG ? window.SITE_CONFIG.baseUrl : '';
             const homeButton = document.getElementById('homeButton');
-            
+        
             // Atualizar o link para a página inicial
             if (homeButton && baseUrl) {
                 homeButton.href = baseUrl;
             }
-            
-            // Redirecionar para a página principal após um breve atraso
+        
+            // Redirecionar para a página do sistema
             setTimeout(function() {
-                window.location.href = baseUrl || 'index.html';
+                window.location.href = baseUrl + "app/";
             }, 1500);
         });
     </script>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestão de Técnicos e Materiais</title>
+    <link rel="icon" href="../favicon.ico" />
+    <!-- Importar o arquivo de configuração global -->
+    <script src="../config.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+        }
+        
+        iframe {
+            border: none;
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 1000;
+        }
+        
+        .loader {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 80%;
+            margin: 0 auto;
+        }
+        
+        .error-message h2 {
+            color: #e53e3e;
+            margin-bottom: 10px;
+        }
+        
+        .error-message p {
+            margin-bottom: 20px;
+        }
+        
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3182ce;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="loader"></div>
+        <p>Carregando o sistema...</p>
+    </div>
+    
+    <div class="error-message" id="errorMessage">
+        <h2>Erro ao carregar</h2>
+        <p>Não foi possível carregar o sistema. Por favor, tente novamente mais tarde.</p>
+        <a href="../" class="button">Voltar para a página inicial</a>
+    </div>
+    
+    <iframe id="contentFrame" src="../" style="display:none;"></iframe>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const baseUrl = window.SITE_CONFIG ? window.SITE_CONFIG.baseUrl : '../';
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+            const contentFrame = document.getElementById('contentFrame');
+            
+            // Tentar carregar o conteúdo principal
+            try {
+                // Simular carregamento do conteúdo
+                setTimeout(function() {
+                    // Aqui você carregaria o conteúdo real da página
+                    // Para este exemplo, vamos apenas mostrar o conteúdo principal
+                    loading.style.display = 'none';
+                    
+                    // Redirecionar para a página principal
+                    window.location.href = baseUrl;
+                }, 1500);
+            } catch (error) {
+                console.error('Erro ao carregar o conteúdo:', error);
+                loading.style.display = 'none';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

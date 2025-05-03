@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Gestão de Técnicos e Materiais</title>
+    <link rel="icon" href="../../favicon.ico" />
+    <!-- Importar o arquivo de configuração global -->
+    <script src="../../config.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background-color: #f9fafb;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 120px;
+            height: 48px;
+            object-fit: contain;
+            margin: 0 auto 1rem;
+            display: block;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #111827;
+        }
+        
+        .header p {
+            margin: 0.5rem 0 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .content {
+            padding: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: white;
+            color: #111827;
+            font-size: 1rem;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+        }
+        
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .button:disabled {
+            background-color: #93c5fd;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-icon {
+            margin-right: 0.5rem;
+            flex-shrink: 0;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .back-icon {
+            margin-right: 0.25rem;
+        }
+        
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="../../" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" class="back-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Voltar para a página inicial
+    </a>
+    
+    <div class="container">
+        <div class="header">
+            <img src="https://cdn.teletime.com.br/wp-content/uploads/2023/02/claro_waifu2x_photo_noise3_scale-696x391.jpg" alt="Logo da Empresa" class="logo">
+            <h1>Área Restrita</h1>
+            <p>Digite suas credenciais para acessar a área do administrador</p>
+        </div>
+        
+        <div class="content">
+            <div class="error-message" id="errorMessage" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" class="error-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span id="errorText">Usuário ou senha incorretos</span>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username" class="form-label">Usuário</label>
+                    <input type="text" id="username" class="form-input" placeholder="Digite seu usuário" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <input type="password" id="password" class="form-input" placeholder="Digite sua senha" required>
+                </div>
+                
+                <button type="submit" class="button" id="submitButton">Entrar</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const submitButton = document.getElementById('submitButton');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            // Credenciais de demonstração
+            const validCredentials = {
+                username: 'admin',
+                password: 'admin123'
+            };
+            
+            // Lidar com o envio do formulário
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value;
+                
+                // Desabilitar botão durante o login
+                submitButton.disabled = true;
+                submitButton.textContent = 'Entrando...';
+                
+                // Esconder mensagem de erro
+                errorMessage.style.display = 'none';
+                
+                // Simular verificação de credenciais
+                setTimeout(function() {
+                    if (username === validCredentials.username && password === validCredentials.password) {
+                        // Login bem-sucedido
+                        
+                        // Simular armazenamento do usuário
+                        try {
+                            const user = {
+                                username: username,
+                                role: 'admin'
+                            };
+                            
+                            localStorage.setItem('user', JSON.stringify(user));
+                            
+                            // Redirecionar para a área do administrador
+                            const baseUrl = window.SITE_CONFIG ? window.SITE_CONFIG.baseUrl : '../../';
+                            window.location.href = baseUrl + 'app/admin/';
+                        } catch (error) {
+                            console.error('Erro ao salvar usuário:', error);
+                            errorText.textContent = 'Ocorreu um erro ao fazer login';
+                            errorMessage.style.display = 'flex';
+                        }
+                    } else {
+                        // Login falhou
+                        errorText.textContent = 'Usuário ou senha incorretos';
+                        errorMessage.style.display = 'flex';
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Entrar';
+                    }
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
